@@ -8,7 +8,8 @@
     <style>
         body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
         #map { height: 100vh; width: 100%; }
-        .popup-content b { font-size: 14px; color: #333; }
+        .popup-content { font-size: 13px; line-height: 1.5; }
+        .popup-content b { font-size: 15px; color: #007bff; display: block; margin-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -17,14 +18,14 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Xaritani O'zbekiston markaziga sozlash
-        var map = L.map('map').setView([41.0000, 71.0000], 7); 
+        // Xaritani O'zbekiston markaziga sozlash (Farg'ona vodiysi yaxshi ko'rinadigan qilib)
+        var map = L.map('map').setView([40.9983, 71.6725], 9); 
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        // Obsidian fayllari ro'yxati (Siz ochgan fayllar nomlari)
+        // Obsidian fayllaringiz ro'yxati
         var files = [
             "NAMANGAN MASHAD MOYKA.md",
             "QASHQADARYO DILLER.md",
@@ -32,46 +33,61 @@
             "XORAZM DILLER.md"
         ];
 
-        // Har bir fayldagi Frontmatter (Properties) ma'lumotlarini o'qish
+        // Har bir faylni o'qish funksiyasi
         files.forEach(function(fileName) {
-            fetch(encodeURIComponent(fileName))
-                .then(response => response.text())
+            fetch(fileName)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Fayl topilmadi: " + fileName);
+                    }
+                    return response.text();
+                })
                 .then(text => {
-                    // Kichik va sodda Markdown Frontmatter parser
+                    console.log(fileName + " yuklandi. Tarkibi tekshirilmoqda...");
+                    
+                    // YAML Frontmatter (--- va --- orasidagi qism)ni ajratib olish
                     var match = text.match(/---([\s\S]*?)---/);
-                    if (match) {
-                        var lines = match[1].split('\n');
-                        var data = {};
-                        lines.forEach(line => {
-                            var parts = line.split(':');
-                            if (parts.length >= 2) {
-                                var key = parts[0].trim();
-                                var value = parts.slice(1).join(':').trim().replace(/['"]/g, '');
-                                data[key] = value;
-                            }
-                        });
+                    if (!match) {
+                        console.warn(fileName + " ichida '---' xususiyatlar bo'limi topilmadi!");
+                        return;
+                    }
 
-                        var lat = parseFloat(data.lat);
-                        var lng = parseFloat(data.lng);
-
-                        if (!isNaN(lat) && !isNaN(lng)) {
-                            // Marker qo'shish
-                            var marker = L.marker([lat, lng]).addTo(map);
-                            
-                            // Ranglarni turi bo'yicha ajratsa ham bo'ladi, hozircha standart ko'rinish
-                            var popupText = `
-                                <div class="popup-content">
-                                    <b>${data.title || fileName.replace('.md','')}</b><br>
-                                    <strong>Turi:</strong> ${data.type || 'Noma\'lum'}<br>
-                                    <strong>Manzil:</strong> ${data.address || 'Kiritilmagan'}<br>
-                                    <strong>Tel:</strong> ${data.phone || 'Kiritilmagan'}
-                                </div>
-                            `;
-                            marker.bindPopup(popupText);
+                    var lines = match[1].split('\n');
+                    var data = {};
+                    
+                    lines.forEach(line => {
+                        var colonIndex = line.indexOf(':');
+                        if (colonIndex !== -1) {
+                            var key = line.substring(0, colonIndex).trim();
+                            var value = line.substring(colonIndex + 1).trim().replace(/['"]/g, '');
+                            data[key] = value;
                         }
+                    });
+
+                    // Koordinatalarni raqamga o'tkazish
+                    var lat = parseFloat(data.lat);
+                    var lng = parseFloat(data.lng);
+
+                    console.log(fileName + " koordinatalari:", "lat:", lat, "lng:", lng);
+
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        // Xaritaga marker (nuqta) qo'shish
+                        var marker = L.marker([lat, lng]).addTo(map);
+                        
+                        var popupText = `
+                            <div class="popup-content">
+                                <b>${data.title || fileName.replace('.md','')}</b>
+                                <strong>Turi:</strong> ${data.type || 'Kiritilmagan'}<br>
+                                <strong>Manzil:</strong> ${data.address || 'Kiritilmagan'}<br>
+                                <strong>Tel:</strong> ${data.phone || 'Kiritilmagan'}
+                            </div>
+                        `;
+                        marker.bindPopup(popupText);
+                    } else {
+                        console.error(fileName + " ichidagi lat yoki lng koordinatasi noto'g'ri formatda yoki yo'q!");
                     }
                 })
-                .catch(err => console.log("Faylni o'qishda xato: ", err));
+                .catch(err => console.error(err));
         });
     </script>
 </body>
