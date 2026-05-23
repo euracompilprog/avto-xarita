@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avtoshampun Diller va Moykalar Xaritasi</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        #map { height: 100vh; width: 100%; }
+        .popup-content b { font-size: 14px; color: #333; }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Xaritani O'zbekiston markaziga sozlash
+        var map = L.map('map').setView([41.0000, 71.0000], 7); 
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Obsidian fayllari ro'yxati (Siz ochgan fayllar nomlari)
+        var files = [
+            "NAMANGAN MASHAD MOYKA.md",
+            "QASHQADARYO DILLER.md",
+            "TOSHKENT 7030.md",
+            "XORAZM DILLER.md"
+        ];
+
+        // Har bir fayldagi Frontmatter (Properties) ma'lumotlarini o'qish
+        files.forEach(function(fileName) {
+            fetch(encodeURIComponent(fileName))
+                .then(response => response.text())
+                .then(text => {
+                    // Kichik va sodda Markdown Frontmatter parser
+                    var match = text.match(/---([\s\S]*?)---/);
+                    if (match) {
+                        var lines = match[1].split('\n');
+                        var data = {};
+                        lines.forEach(line => {
+                            var parts = line.split(':');
+                            if (parts.length >= 2) {
+                                var key = parts[0].trim();
+                                var value = parts.slice(1).join(':').trim().replace(/['"]/g, '');
+                                data[key] = value;
+                            }
+                        });
+
+                        var lat = parseFloat(data.lat);
+                        var lng = parseFloat(data.lng);
+
+                        if (!isNaN(lat) && !isNaN(lng)) {
+                            // Marker qo'shish
+                            var marker = L.marker([lat, lng]).addTo(map);
+                            
+                            // Ranglarni turi bo'yicha ajratsa ham bo'ladi, hozircha standart ko'rinish
+                            var popupText = `
+                                <div class="popup-content">
+                                    <b>${data.title || fileName.replace('.md','')}</b><br>
+                                    <strong>Turi:</strong> ${data.type || 'Noma\'lum'}<br>
+                                    <strong>Manzil:</strong> ${data.address || 'Kiritilmagan'}<br>
+                                    <strong>Tel:</strong> ${data.phone || 'Kiritilmagan'}
+                                </div>
+                            `;
+                            marker.bindPopup(popupText);
+                        }
+                    }
+                })
+                .catch(err => console.log("Faylni o'qishda xato: ", err));
+        });
+    </script>
+</body>
+</html>
