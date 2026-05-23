@@ -4,97 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eura Compil - Hamkorlar Xaritasi</title>
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-        }
-        #map {
-            height: 100%;
-            width: 100%;
-        }
-        .popup-content h3 {
-            margin: 0 0 10px 0;
-            color: #2c3e50;
-            font-family: Arial, sans-serif;
-        }
-        .popup-content p {
-            margin: 5px 0;
-            font-size: 13px;
-            font-family: Arial, sans-serif;
-            color: #34495e;
-        }
+        html, body, #map { margin: 0; padding: 0; height: 100%; width: 100%; }
+        .popup-content h3 { margin: 0 0 10px 0; color: #2c3e50; font-family: Arial, sans-serif; }
+        .popup-content p { margin: 5px 0; font-size: 13px; font-family: Arial, sans-serif; color: #34495e; }
     </style>
 </head>
 <body>
 
     <div id="map"></div>
 
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
-        // O'zbekiston markaziga xaritani sozlash
         const map = L.map('map').setView([41.0000, 68.0000], 6);
 
-        // Ochiq xarita qatlamini qo'shish (OpenStreetMap)
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        // Hamkorlar ma'lumotlar bazasi (To'g'ridan-to'g'ri kod ichida)
-        const locations = [
-            {
-                title: "Namangan Mashad Moyka",
-                type: "Moyka",
-                address: "Namangan shahri, Mashad hududi",
-                phone: "+998 91 987-65-43",
-                lat: 41.0012,
-                lng: 71.6435
-            },
-            {
-                title: "Qashqadaryo Diller",
-                type: "Diller",
-                address: "Qarshi shahri, Avto-kimyo majmuasi",
-                phone: "+998 90 123-45-67",
-                lat: 38.8610,
-                lng: 65.7892
-            },
-            {
-                title: "Toshkent 7030 Moyka",
-                type: "Moyka",
-                address: "Toshkent shahri, Yunusobod tumani",
-                phone: "+998 93 111-22-33",
-                lat: 41.3111,
-                lng: 69.2797
-            },
-            {
-                title: "Xorazm Diller",
-                type: "Diller",
-                address: "Urganch shahri, Markaziy ko'cha",
-                phone: "+998 94 444-55-66",
-                lat: 41.5500,
-                lng: 60.6333
-            }
+        // AGAR OBSIDIAN-DA YANGI FAYL OCHSANGIZ, NOMINI SHU YERGA QO'SHIB QO'YASIZ:
+        const obsidianFiles = [
+            'NAMANGAN MASHAD MOYKA.md',
+            'QASHQADARYO DILLER.md',
+            'TOSHKENT 7030.md',
+            'XORAZM DILLER.md'
         ];
 
-        // Har bir joyni xaritaga joylashtirish
-        locations.forEach(loc => {
-            const marker = L.marker([loc.lat, loc.lng]).addTo(map);
-            
-            const popupText = `
-                <div class="popup-content">
-                    <h3>${loc.title}</h3>
-                    <p><b>Turi:</b> ${loc.type}</p>
-                    <p><b>Manzil:</b> ${loc.address}</p>
-                    <p><b>Telefon:</b> ${loc.phone}</p>
-                </div>
-            `;
-            marker.bindPopup(popupText);
+        function parseMarkdown(text) {
+            const yamlRegex = /^---\r?\n([\s\S]*?)\r?\n---/;
+            const match = text.match(yamlRegex);
+            if (!match) return null;
+
+            const lines = match[1].split('\n');
+            const result = {};
+            lines.forEach(line => {
+                const parts = line.split(':');
+                if (parts.length >= 2) {
+                    result[parts[0].trim()] = parts.slice(1).join(':').trim();
+                }
+            });
+            return result;
+        }
+
+        obsidianFiles.forEach(file => {
+            fetch(file)
+                .then(res => {
+                    if (!res.ok) throw new Error("Topilmadi: " + file);
+                    return res.text();
+                })
+                .then(text => {
+                    const data = parseMarkdown(text);
+                    if (!data) return;
+
+                    // Koordinatadagi xatoliklarni to'g'rilash (vergul bo'lsa nuqtaga o'giradi)
+                    const lat = parseFloat(data.lat.replace(',', '.'));
+                    const lng = parseFloat(data.lng.replace(',', '.'));
+
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        const marker = L.marker([lat, lng]).addTo(map);
+                        
+                        const popupText = `
+                            <div class="popup-content">
+                                <h3>${file.replace('.md', '')}</h3>
+                                <p><b>Turi:</b> ${data.type || 'Kiritilmagan'}</p>
+                                <p><b>Manzil:</b> ${data.address || 'Kiritilmagan'}</p>
+                                <p><b>Telefon:</b> ${data.phone || 'Kiritilmagan'}</p>
+                            </div>
+                        `;
+                        marker.bindPopup(popupText);
+                    }
+                })
+                .catch(err => console.log(err));
         });
     </script>
 </body>
