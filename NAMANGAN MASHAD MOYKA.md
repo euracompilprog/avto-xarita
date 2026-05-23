@@ -1,9 +1,11 @@
-- `title`: MASHAD
-    
-- `type`: MOYKA
-    
-- `lat`: KOCHA TARAF
-    
-- `lng`:
-    
-- `phone`: +998973710707
+---
+title: Namangan Mashad Moyka
+type: Moyka
+address: Namangan shahri, Mashad hududi
+phone: +998 91 987-65-43
+lat: 41.0012
+lng: 71.6435
+---
+
+# Namangan Mashad Moyka
+Moyka haqida batafsil ma'lumotlar.
