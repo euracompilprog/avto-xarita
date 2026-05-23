@@ -7,13 +7,9 @@
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        html, body {
+        html, body, #map {
             margin: 0;
             padding: 0;
-            height: 100%;
-            width: 100%;
-        }
-        #map {
             height: 100%;
             width: 100%;
         }
@@ -46,55 +42,65 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // Hamkorlar ma'lumotlar bazasi (To'g'ridan-to'g'ri kod ichida)
-        const locations = [
-            {
-                title: "Namangan Mashad Moyka",
-                type: "Moyka",
-                address: "Namangan shahri, Mashad hududi",
-                phone: "+998 91 987-65-43",
-                lat: 41.0012,
-                lng: 71.6435
-            },
-            {
-                title: "Qashqadaryo Diller",
-                type: "Diller",
-                address: "Qarshi shahri, Avto-kimyo majmuasi",
-                phone: "+998 90 123-45-67",
-                lat: 38.8610,
-                lng: 65.7892
-            },
-            {
-                title: "Toshkent 7030 Moyka",
-                type: "Moyka",
-                address: "Toshkent shahri, Yunusobod tumani",
-                phone: "+998 93 111-22-33",
-                lat: 41.3111,
-                lng: 69.2797
-            },
-            {
-                title: "Xorazm Diller",
-                type: "Diller",
-                address: "Urganch shahri, Markaziy ko'cha",
-                phone: "+998 94 444-55-66",
-                lat: 41.5500,
-                lng: 60.6333
-            }
+        // Obsidiandagi yangi kichik harfli fayllaringiz ro'yxati
+        const obsidianFiles = [
+            'namangan-mashad-moyka.md',
+            'qashqadaryo-diller.md',
+            'toshkent-7030.md',
+            'xorazm-diller.md'
         ];
 
-        // Har bir joyni xaritaga joylashtirish
-        locations.forEach(loc => {
-            const marker = L.marker([loc.lat, loc.lng]).addTo(map);
-            
-            const popupText = `
-                <div class="popup-content">
-                    <h3>${loc.title}</h3>
-                    <p><b>Turi:</b> ${loc.type}</p>
-                    <p><b>Manzil:</b> ${loc.address}</p>
-                    <p><b>Telefon:</b> ${loc.phone}</p>
-                </div>
-            `;
-            marker.bindPopup(popupText);
+        // Markdown ichidagi YAML xususiyatlarini (Frontmatter) o'quvchi funksiya
+        function parseMarkdown(text) {
+            const yamlRegex = /^---\r?\n([\s\S]*?)\r?\n---/;
+            const match = text.match(yamlRegex);
+            if (!match) return null;
+
+            const lines = match[1].split('\n');
+            const result = {};
+            lines.forEach(line => {
+                const parts = line.split(':');
+                if (parts.length >= 2) {
+                    result[parts[0].trim()] = parts.slice(1).join(':').trim();
+                }
+            });
+            return result;
+        }
+
+        // Har bir faylni o'qib, xaritaga marker qilib qo'shish
+        obsidianFiles.forEach(file => {
+            fetch(file)
+                .then(res => {
+                    if (!res.ok) throw new Error("Fayl topilmadi: " + file);
+                    return res.text();
+                })
+                .then(text => {
+                    const data = parseMarkdown(text);
+                    if (!data) return;
+
+                    // Koordinatadagi vergulni nuqtaga almashtirish (agar xato yozilgan bo'lsa)
+                    const lat = parseFloat(data.lat.replace(',', '.'));
+                    const lng = parseFloat(data.lng.replace(',', '.'));
+
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        const marker = L.marker([lat, lng]).addTo(map);
+                        
+                        // Chiroyli sarlavha chiqarish uchun fayl nomini chiroyli ko'rinishga keltiramiz
+                        // Masalan: namangan-mashad-moyka -> NAMANGAN MASHAD MOYKA
+                        const cleanTitle = file.replace('.md', '').replace(/-/g, ' ').toUpperCase();
+                        
+                        const popupText = `
+                            <div class="popup-content">
+                                <h3>${cleanTitle}</h3>
+                                <p><b>Turi:</b> ${data.type || 'Kiritilmagan'}</p>
+                                <p><b>Manzil:</b> ${data.address || 'Kiritilmagan'}</p>
+                                <p><b>Telefon:</b> ${data.phone || 'Kiritilmagan'}</p>
+                            </div>
+                        `;
+                        marker.bindPopup(popupText);
+                    }
+                })
+                .catch(err => console.error(err));
         });
     </script>
 </body>
