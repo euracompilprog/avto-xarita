@@ -1,0 +1,196 @@
+{
+  "main": {
+    "id": "069ea8c326f8fd52",
+    "type": "split",
+    "children": [
+      {
+        "id": "5bcd991e9423e203",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6b33f4ec6654cd06",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Граф"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "1a7a29360ea3ea05",
+    "type": "split",
+    "children": [
+      {
+        "id": "9664a2c1072fcd3a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "56ef963675972f97",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Файловый менеджер"
+            }
+          },
+          {
+            "id": "2ca44e10048a97fa",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Поиск"
+            }
+          },
+          {
+            "id": "f0871c5204db23b9",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Закладки"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "aec1e1cd2f40871e",
+    "type": "split",
+    "children": [
+      {
+        "id": "9936d738d17c30e1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b31415a3c02658b7",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "QASHQADARYO DILLER.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Обратные ссылки для QASHQADARYO DILLER"
+            }
+          },
+          {
+            "id": "a8141289fe519ef0",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "QASHQADARYO DILLER.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Исходящие ссылки из QASHQADARYO DILLER"
+            }
+          },
+          {
+            "id": "a907237a4ea4afb0",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Теги"
+            }
+          },
+          {
+            "id": "ba6ada60239facc8",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Все свойства"
+            }
+          },
+          {
+            "id": "d6b4be01062fbae8",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "QASHQADARYO DILLER.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Структура QASHQADARYO DILLER"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "obsidian-git:Open Git source control": false,
+      "switcher:Меню быстрого перехода": false,
+      "graph:Граф": false,
+      "canvas:Создать новый холст": false,
+      "daily-notes:Сегодняшняя заметка": false,
+      "templates:Вставить шаблон": false,
+      "command-palette:Открыть палитру команд": false,
+      "bases:Создать новую базу": false
+    }
+  },
+  "active": "6b33f4ec6654cd06",
+  "lastOpenFiles": [
+    "Без названия.canvas",
+    "Без названия 1.canvas",
+    "XORAZM DILLER.md",
+    "TOSHKENT 7030.md",
+    "QASHQADARYO DILLER.md",
+    "NAMANGAN MASHAD MOYKA.md",
+    "Добро пожаловать.md",
+    "Без названия.md",
+    "Без названия.base",
+    "Без названия 1.base"
+  ]
+}
