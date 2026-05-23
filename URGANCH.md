@@ -1,0 +1,10 @@
+---
+type: Diller
+address: Urganch shahri, Markaziy ko'cha
+phone: +998 94 444-55-66
+lat: 41.55
+lng: 60.6333
+---
+
+# Xorazm Diller
+Xorazmdagi dilerlik nuqtamiz.

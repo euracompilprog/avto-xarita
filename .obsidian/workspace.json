@@ -20,8 +20,23 @@
               "icon": "lucide-file",
               "title": "XORAZM DILLER"
             }
+          },
+          {
+            "id": "eb94cde30ce62660",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "URGANCH.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "URGANCH"
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -184,17 +199,17 @@
       "bases:Создать новую базу": false
     }
   },
-  "active": "6b33f4ec6654cd06",
+  "active": "eb94cde30ce62660",
   "lastOpenFiles": [
+    "XORAZM DILLER.md",
+    "URGANCH.md",
     "index.html",
     "TOSHKENT 7030.md",
     "NAMANGAN MASHAD MOYKA.md",
     "QASHQADARYO DILLER.md",
     "Без названия.canvas",
     "Без названия 1.canvas",
-    "XORAZM DILLER.md",
     "Добро пожаловать.md",
-    "Без названия.md",
     "Без названия.base",
     "Без названия 1.base"
   ]
